@@ -1,16 +1,21 @@
 const express = require("express");
-// const serverless = require("serverless-http");
+const serverless = require("serverless-http");
 const app = express();
 const router = express.Router();
-const Routers = require("./routes/index");
 
-// router.get("/", (req, res) => {
-//   res.json({
-//     hello: "hi!"
-//   });
-// });
+router.get("/test", (req, res) => {
+  res.json({
+    hello: "hi!"
+  });
+});
 
-app.use(`/.netlify/functions/api`, Routers);
+router.get("/file/upload", (req, res) => {
+  res.json({
+    hello: "file upload"
+  });
+});
 
-// module.exports = app;
-// module.exports.handler = serverless(app);
+app.use(`/.netlify/functions/api`, router);
+
+module.exports = app;
+module.exports.handler = serverless(app);
