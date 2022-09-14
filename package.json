@@ -4,7 +4,16 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "express": "^4.16.4",
+    "aws-sdk": "^2.1213.0",
+    "axios": "^0.27.2",
+    "csv-parser": "^3.0.0",
+    "dotenv": "^16.0.2",
+    "node-fs": "^0.1.7",
+    "nodemon": "^2.0.19",
+    "path": "^0.12.7",
+    "request": "^2.88.2",
+    "s3-write-stream": "0.0.1",
+    "express": "^4.18.1",
     "netlify-lambda": "^1.4.3",
     "serverless-http": "^1.9.1"
   },
