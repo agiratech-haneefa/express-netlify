@@ -153,7 +153,7 @@ router.get("/file/upload", (req, res) => {
       });
     }
   });
-  res.send("Success");
+  // res.send("Success");
 });
 
 // ------- File upload Part End ------------
