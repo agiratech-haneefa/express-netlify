@@ -62,7 +62,7 @@ async function readCsvFile(results, data, s3, csvFilePath) {
     const fileLocation = e["File Location"];
 
     data.Contents.filter(async (e) => {
-      console.log("444444 e:",e);
+      console.log("444444 e:", e);
       if (e.Key === fileLocation) {
         // get extension name (ex: .pdf .png)
         const extension = path.extname(e.Key);
@@ -107,9 +107,10 @@ async function readCsvFile(results, data, s3, csvFilePath) {
 }
 
 router.get("/file/upload", (req, res) => {
+  console.log("Entered");
   const accessParams = {
-    accessKeyId: "AKIATKMMBEY4V2L6DA3S",
-    secretAccessKey: "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",
+    accessKeyId: "AKIATKMMBEY4YXN2QPSG",
+    secretAccessKey: "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",
     region: "us-east-1",
   };
 
@@ -123,10 +124,11 @@ router.get("/file/upload", (req, res) => {
 
   s3.listObjects(bucketParams, async function (err, data) {
     if (err) {
+      console.log("Access Denied :", err);
     } else {
       console.log("1111111");
       data.Contents.filter(async (e) => {
-        console.log("eeeeeeee :",e);
+        console.log("eeeeeeee :", e);
         if (e.Key === "TEST file import.csv") {
           const options = {
             Bucket: "freshsales.fileupload",
