@@ -37,7 +37,6 @@ async function createFile(argsParams) {
     url: "https://agira-487848471470802978.myfreshworks.com/crm/sales/api/documents",
     headers: {
       Authorization: `Token token=hdfUPukdvZL61x7FxKIptg`,
-      // ${process.env.freshDeskToken}`,
       "Content-Type": "application/json",
     },
     formData: args,
@@ -108,9 +107,7 @@ function readCsvFile(results, data, s3, csvFilePath) {
 router.get("/file/upload", (req, res) => {
   const accessParams = {
     accessKeyId: "AKIATKMMBEY4V2L6DA3S",
-    // `${process.env.accessKeyId}`,
     secretAccessKey: "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",
-    //  `${process.env.secretAccessKey}`,
     region: "us-east-1",
   };
 
@@ -146,8 +143,8 @@ router.get("/file/upload", (req, res) => {
             fs.createReadStream(csvFilePath.toString())
               .pipe(csv({}))
               .on("data", (data) => results.push(data))
-              .on("end", () => {
-                readCsvFile(results, data, s3, csvFilePath);
+              .on("end", async () => {
+                await readCsvFile(results, data, s3, csvFilePath);
               });
           });
 
@@ -162,6 +159,14 @@ router.get("/file/upload", (req, res) => {
 // ------- File upload Part End ------------
 
 app.use(`/.netlify/functions/api`, router);
+
+// app.listen(3000, (error) => {
+//   if (!error)
+//     console.log(
+//       "Server is Successfully Running,and App is listening on port " + 3000
+//     );
+//   else console.log("Error occurred, server can't start", error);
+// });
 
 module.exports = app;
 module.exports.handler = serverless(app);
