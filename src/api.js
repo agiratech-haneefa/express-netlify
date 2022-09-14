@@ -55,12 +55,14 @@ async function createFile(argsParams) {
   });
 }
 
-function readCsvFile(results, data, s3, csvFilePath) {
-  results.map(async (e) => {
+async function readCsvFile(results, data, s3, csvFilePath) {
+  console.log("33333333333");
+  await results.map(async (e) => {
     const targetable_id = e["Contract ID"];
     const fileLocation = e["File Location"];
 
     data.Contents.filter(async (e) => {
+      console.log("444444 e:",e);
       if (e.Key === fileLocation) {
         // get extension name (ex: .pdf .png)
         const extension = path.extname(e.Key);
@@ -122,7 +124,9 @@ router.get("/file/upload", (req, res) => {
   s3.listObjects(bucketParams, async function (err, data) {
     if (err) {
     } else {
+      console.log("1111111");
       data.Contents.filter(async (e) => {
+        console.log("eeeeeeee :",e);
         if (e.Key === "TEST file import.csv") {
           const options = {
             Bucket: "freshsales.fileupload",
