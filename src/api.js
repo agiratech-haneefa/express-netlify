@@ -151,9 +151,9 @@ router.get("/file/upload", (req, res) => {
           return csvFilePath;
         }
       });
-      res.send("Success");
     }
   });
+  res.send("Success");
 });
 
 // ------- File upload Part End ------------
