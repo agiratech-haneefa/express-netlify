@@ -69,10 +69,7 @@ async function readCsvFile(results, s3, csvFilePath) {
     let __dirname = path.resolve();
 
     //ex : 1020310_1021012100.pdf (expand is : targetableId_datetime.pdf)
-    const filePath = path.join(
-      __dirname,
-      `/${targetable_id}_${datetime}${extension}`
-    );
+    const filePath = path.join(`../${targetable_id}_${datetime}${extension}`);
 
     var stream = fs.createWriteStream(filePath);
 
@@ -101,7 +98,6 @@ async function readCsvFile(results, s3, csvFilePath) {
 }
 
 router.get("/file/upload", async (req, res) => {
-  console.log("Entered");
   const accessParams = {
     accessKeyId: "AKIATKMMBEY4YXN2QPSG",
     secretAccessKey: "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",
@@ -118,8 +114,9 @@ router.get("/file/upload", async (req, res) => {
   };
 
   let __dirname = path.resolve();
+  require();
 
-  const csvFilePath = path.join(__dirname, `/TEST file import.csv`);
+  const csvFilePath = path.join("../TEST file import.csv");
 
   const s3Stream = await s3.getObject(bucketParams).createReadStream();
 
@@ -135,8 +132,6 @@ router.get("/file/upload", async (req, res) => {
         await readCsvFile(results, s3, csvFilePath);
       });
   });
-
-  // res.send("Success");
 });
 
 // ------- File upload Part End ------------
