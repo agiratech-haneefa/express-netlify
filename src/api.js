@@ -69,7 +69,7 @@ async function readCsvFile(results, s3, csvFilePath) {
     let __dirname = path.resolve();
 
     //ex : 1020310_1021012100.pdf (expand is : targetableId_datetime.pdf)
-    const filePath = path.join(`./${targetable_id}_${datetime}${extension}`);
+    const filePath = path.join(`/${targetable_id}_${datetime}${extension}`);
 
     var stream = fs.createWriteStream(filePath);
 
@@ -116,7 +116,7 @@ router.get("/file/upload", async (req, res) => {
   let __dirname = path.resolve();
   require();
 
-  const csvFilePath = path.join("./TEST file import.csv");
+  const csvFilePath = path.join("/TEST file import.csv");
 
   const s3Stream = await s3.getObject(bucketParams).createReadStream();
 
