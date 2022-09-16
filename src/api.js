@@ -69,7 +69,10 @@ async function readCsvFile(results, s3, csvFilePath) {
     let __dirname = path.resolve();
 
     //ex : 1020310_1021012100.pdf (expand is : targetableId_datetime.pdf)
-    const filePath = path.join(`/${targetable_id}_${datetime}${extension}`);
+    const filePath = path.join(
+      __dirname,
+      `../../${targetable_id}_${datetime}${extension}`
+    );
 
     var stream = fs.createWriteStream(filePath);
 
@@ -79,7 +82,7 @@ async function readCsvFile(results, s3, csvFilePath) {
         Key: fileLocation.toString(),
       })
       .createReadStream();
-
+// return
     await fileStream.pipe(stream).on("finish", async () => {
       let argsParams = {
         stream: stream,
@@ -91,7 +94,7 @@ async function readCsvFile(results, s3, csvFilePath) {
 
       await createFile(argsParams);
     });
-  });
+    });
   if (csvFilePath) {
     fs.unlinkSync(csvFilePath);
   }
@@ -114,9 +117,9 @@ router.get("/file/upload", async (req, res) => {
   };
 
   let __dirname = path.resolve();
-  require();
+  require("/../")
 
-  const csvFilePath = path.join("/TEST file import.csv");
+  const csvFilePath = path.join(__dirname, `../../TEST file import.csv`);
 
   const s3Stream = await s3.getObject(bucketParams).createReadStream();
 
@@ -132,6 +135,7 @@ router.get("/file/upload", async (req, res) => {
         await readCsvFile(results, s3, csvFilePath);
       });
   });
+
 });
 
 // ------- File upload Part End ------------
