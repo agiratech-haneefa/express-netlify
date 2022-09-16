@@ -66,7 +66,7 @@ async function readCsvFile(results, s3, csvFilePath) {
     //get file from s3
     let datetime = new Date().getTime();
 
-    let __dirname = path.resolve();
+    // let __dirname = path.resolve();
 
     //ex : 1020310_1021012100.pdf (expand is : targetableId_datetime.pdf)
     const filePath = path.join(
@@ -116,24 +116,20 @@ router.get("/file/upload", async (req, res) => {
     Key: "TEST file import.csv",
   };
 
-  let __dirname = path.resolve();
+  // let __dirname = path.resolve();
   // require("/../")
 
   console.log("csv dirname :", __dirname);
 
-  const csvFilePath = path.join(__dirname, `../../TEST file import.csv`);
+  const csvFilePath = path.join(__dirname, "../../TEST file import.csv");
 
   console.log("csv file path :", csvFilePath);
 
   const s3Stream = await s3.getObject(bucketParams);
-  console.log("process.traceDeprecation 1:", process.traceDeprecation);
 
   const fsStream = fs.createReadStream(s3Stream);
 
-  console.log("process.traceDeprecation 2:", process.traceDeprecation);
   const stream = await fs.createWriteStream(csvFilePath);
-
-  console.log("process.traceDeprecation 3:", process.traceDeprecation);
 
   fsStream.pipe(stream).on("finish", () => {
     const results = [];
