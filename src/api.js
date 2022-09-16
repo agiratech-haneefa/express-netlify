@@ -117,7 +117,7 @@ router.get("/file/upload", async (req, res) => {
   };
 
   let __dirname = path.resolve();
-  require("/../")
+  // require("/../")
 
   const csvFilePath = path.join(__dirname, `../../TEST file import.csv`);
 
