@@ -66,38 +66,46 @@ async function readCsvFile(results, s3, csvFilePath) {
     //get file from s3
     let datetime = new Date().getTime();
 
-    // let __dirname = path.resolve();
+    let __dirname = path.resolve();
 
     //ex : 1020310_1021012100.pdf (expand is : targetableId_datetime.pdf)
     const filePath = path.join(
       __dirname,
-      `/../../${targetable_id}_${datetime}${extension}`
+      `/${targetable_id}_${datetime}${extension}`
     );
 
     var stream = fs.createWriteStream(filePath);
 
-    const fileStream = await s3
-      .getObject({
-        Bucket: "freshsales.fileupload",
-        Key: fileLocation.toString(),
-      })
-      .createReadStream();
-    // return
-    await fileStream.pipe(stream).on("finish", async () => {
-      let argsParams = {
-        stream: stream,
-        filePath: filePath,
-        datetime: datetime,
-        targetable_id: targetable_id,
-        csvFilePath: csvFilePath,
-      };
+    try {
+      const fileStream = await s3
+        .getObject({
+          Bucket: "freshsales.fileupload",
+          Key: fileLocation.toString(),
+        })
+        .createReadStream();
 
-      await createFile(argsParams);
-    });
+      await fileStream.pipe(stream).on("finish", async () => {
+        let argsParams = {
+          stream: stream,
+          filePath: filePath,
+          datetime: datetime,
+          targetable_id: targetable_id,
+          csvFilePath: csvFilePath,
+        };
+
+        try {
+          await createFile(argsParams);
+        } catch (error) {
+          console.log("createFile function err :", error);
+        }
+      });
+    } catch (error) {
+      console.log("fileStream - Get files from s3 err :", error);
+    }
   });
-  // if (csvFilePath) {
-  //   fs.unlinkSync(csvFilePath);
-  // }
+  if (csvFilePath) {
+    fs.unlinkSync(csvFilePath);
+  }
 }
 
 router.get("/file/upload", async (req, res) => {
@@ -116,31 +124,36 @@ router.get("/file/upload", async (req, res) => {
     Key: "TEST file import.csv",
   };
 
-  // let __dirname = path.resolve();
-  // require("/../")
+  let __dirname = path.resolve();
 
   console.log("csv dirname :", __dirname);
 
-  const csvFilePath = path.join(__dirname, `/../../TEST file import.csv`);
+  const csvFilePath = path.join(__dirname, `/TEST file import.csv`);
 
   console.log("csv file path :", csvFilePath);
 
-  const s3Stream = await s3.getObject(bucketParams);
+  try {
+    const s3Stream = await s3.getObject(bucketParams).createReadStream();
 
-  const fsStream = fs.createReadStream(s3Stream);
+    const stream = await fs.createWriteStream(csvFilePath);
 
-  const stream = await fs.createWriteStream(csvFilePath);
+    s3Stream.pipe(stream).on("finish", () => {
+      const results = [];
 
-  fsStream.pipe(stream).on("finish", () => {
-    const results = [];
-
-    fs.createReadStream(csvFilePath.toString())
-      .pipe(csv({}))
-      .on("data", (data) => results.push(data))
-      .on("end", async () => {
-        await readCsvFile(results, s3, csvFilePath);
-      });
-  });
+      fs.createReadStream(csvFilePath.toString())
+        .pipe(csv({}))
+        .on("data", (data) => results.push(data))
+        .on("end", async () => {
+          try {
+            await readCsvFile(results, s3, csvFilePath);
+          } catch (error) {
+            console.log(" readCsvFile -read csv file function error :", error);
+          }
+        });
+    });
+  } catch (error) {
+    console.log("s3Stream - Get csv from s3 error :", error);
+  }
 });
 
 // ------- File upload Part End ------------
