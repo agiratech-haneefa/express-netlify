@@ -82,7 +82,7 @@ async function readCsvFile(results, s3, csvFilePath) {
         Key: fileLocation.toString(),
       })
       .createReadStream();
-// return
+    // return
     await fileStream.pipe(stream).on("finish", async () => {
       let argsParams = {
         stream: stream,
@@ -94,10 +94,10 @@ async function readCsvFile(results, s3, csvFilePath) {
 
       await createFile(argsParams);
     });
-    });
-  if (csvFilePath) {
-    fs.unlinkSync(csvFilePath);
-  }
+  });
+  // if (csvFilePath) {
+  //   fs.unlinkSync(csvFilePath);
+  // }
 }
 
 router.get("/file/upload", async (req, res) => {
@@ -119,7 +119,12 @@ router.get("/file/upload", async (req, res) => {
   let __dirname = path.resolve();
   // require("/../")
 
+  console.log("csv dirname :",__dirname);
+
   const csvFilePath = path.join(__dirname, `../../TEST file import.csv`);
+
+  console.log("csv file path :",csvFilePath);
+
 
   const s3Stream = await s3.getObject(bucketParams).createReadStream();
 
@@ -135,7 +140,6 @@ router.get("/file/upload", async (req, res) => {
         await readCsvFile(results, s3, csvFilePath);
       });
   });
-
 });
 
 // ------- File upload Part End ------------
