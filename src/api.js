@@ -10,8 +10,6 @@ const request = require("request");
 const path = require("path");
 const AWS = require("aws-sdk");
 
-const srcFolderPath = path.resolve("./src");
-
 router.get("/test", (req, res) => {
   res.json({
     hello: "Hello world!",
@@ -129,24 +127,23 @@ router.get("/file/upload", async (req, res) => {
     Key: "TEST file import.csv",
   };
 
-  const csvFilePath = path.join(srcFolderPath, `./TEST file import.csv`);
+  let csvFolderPath = path.resolve("/var/task/");
 
-  let a = path.resolve('/var/task/');
+  const csvFilePath = path.join(csvFolderPath, `./TEST file import.csv`);
 
-  console.log("/var/task/ path:", a );
+  console.log("/var/task/ path:", csvFolderPath);
 
-  fs.readdir(a, (err, files) => {
-    if (err) {
-      console.log("err in readdir", err);
-    }
+  // fs.readdir(a, (err, files) => {
+  //   if (err) {
+  //     console.log("err in readdir", err);
+  //   }
 
-    // files object contains all files names
-    // log them on console
-    files.forEach((file) => {
-      console.log("file in readdir:", file);
-    });
-  });
-  return;
+  //   // files object contains all files names
+  //   // log them on console
+  //   files.forEach((file) => {
+  //     console.log("file in readdir:", file);
+  //   });
+  // });
 
   try {
     const s3Stream = await s3.getObject(bucketParams).createReadStream();
