@@ -10,8 +10,6 @@ const request = require("request");
 const path = require("path");
 const AWS = require("aws-sdk");
 
-const absolutePath = path.resolve("./src");
-
 router.get("/test", (req, res) => {
   res.json({
     hello: "Hello world!",
@@ -71,15 +69,24 @@ async function readCsvFile(results, s3, csvFilePath) {
     //get file from s3
     let datetime = new Date().getTime();
 
-    // let __dirname = path.resolve();
+    let __dirname = path.resolve();
 
     //ex : 1020310_1021012100.pdf (expand is : targetableId_datetime.pdf)
     const filePath = path.join(
-      absolutePath,
-      `./${targetable_id}_${datetime}${extension}`
+      __dirname,
+      `../../${targetable_id}_${datetime}${extension}`
     );
 
+    var dir = `./files/${targetable_id}_${datetime}${extension}`;
+
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+
+    console.log("pr 1:", process.traceDeprecation);
+
     var stream = fs.createWriteStream(filePath);
+    console.log("pr 2:", process.traceDeprecation);
 
     try {
       const fileStream = await s3
@@ -88,6 +95,8 @@ async function readCsvFile(results, s3, csvFilePath) {
           Key: fileLocation.toString(),
         })
         .createReadStream();
+
+      console.log("pr 3 :", process.traceDeprecation);
 
       await fileStream.pipe(stream).on("finish", async () => {
         let argsParams = {
@@ -128,26 +137,20 @@ router.get("/file/upload", async (req, res) => {
     Bucket: "freshsales.fileupload",
     Key: "TEST file import.csv",
   };
-  //absolutePath is /src folder
-  const csvFilePath = path.join(absolutePath, `./TEST file import.csv`);
 
-  let a =  process.cwd();
+  let __dirname = path.resolve();
 
-  console.log("current path:",a);
+  var csvDir = `./csvFile`;
 
-  fs.readdir(a, (err, files) => {
-    if (err) {
-      console.log("err in readdir",err); 
-    }
-  
-    // files object contains all files names
-    // log them on console
-    files.forEach(file => {
-      console.log(file)
-    })
-  })
-  // return;
+  if (!fs.existsSync(csvDir)) {
+    var a = fs.mkdirSync(csvDir, { recursive: true });
 
+    console.log(a);
+    // const csvFilePath = path.join(a, `TEST file import.csv`);
+    // console.log("csv file path :", csvFilePath);
+  }
+
+  return;
   try {
     const s3Stream = await s3.getObject(bucketParams).createReadStream();
 
@@ -176,13 +179,13 @@ router.get("/file/upload", async (req, res) => {
 
 app.use(`/.netlify/functions/api`, router);
 
-// app.listen(3000, (error) => {
-//   if (!error)
-//     console.log(
-//       "Server is Successfully Running,and App is listening on port " + 3000
-//     );
-//   else console.log("Error occurred, server can't start", error);
-// });
+app.listen(3000, (error) => {
+  if (!error)
+    console.log(
+      "Server is Successfully Running,and App is listening on port " + 3000
+    );
+  else console.log("Error occurred, server can't start", error);
+});
 
 module.exports = app;
 module.exports.handler = serverless(app);
