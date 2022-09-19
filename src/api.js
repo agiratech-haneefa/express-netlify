@@ -76,7 +76,7 @@ async function readCsvFile(results, s3, csvFilePath) {
     //ex : 1020310_1021012100.pdf (expand is : targetableId_datetime.pdf)
     const filePath = path.join(
       absolutePath,
-      `../../${targetable_id}_${datetime}${extension}`
+      `./${targetable_id}_${datetime}${extension}`
     );
 
     var stream = fs.createWriteStream(filePath);
@@ -128,27 +128,26 @@ router.get("/file/upload", async (req, res) => {
     Bucket: "freshsales.fileupload",
     Key: "TEST file import.csv",
   };
-
+  //absolutePath is /src folder
   const csvFilePath = path.join(absolutePath, `./TEST file import.csv`);
 
-  const csvAbsolute = path.resolve("./TEST file import.csv");
-  
+  console.log("current path:", process.cwd());
   // return;
 
   try {
     const s3Stream = await s3.getObject(bucketParams).createReadStream();
 
-    const stream = await fs.createWriteStream(csvAbsolute);
+    const stream = await fs.createWriteStream(csvFilePath);
 
     s3Stream.pipe(stream).on("finish", () => {
       const results = [];
 
-      fs.createReadStream(csvAbsolute.toString())
+      fs.createReadStream(csvFilePath.toString())
         .pipe(csv({}))
         .on("data", (data) => results.push(data))
         .on("end", async () => {
           try {
-            await readCsvFile(results, s3, csvAbsolute);
+            await readCsvFile(results, s3, csvFilePath);
           } catch (error) {
             console.log(" readCsvFile -read csv file function error :", error);
           }
