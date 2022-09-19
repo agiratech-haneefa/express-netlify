@@ -2,12 +2,15 @@ const express = require("express");
 const serverless = require("serverless-http");
 const app = express();
 const router = express.Router();
+const process = require("process");
 
 const fs = require("node-fs");
 const csv = require("csv-parser");
 const request = require("request");
 const path = require("path");
 const AWS = require("aws-sdk");
+
+const absolutePath = path.resolve("./src");
 
 router.get("/test", (req, res) => {
   res.json({
@@ -57,6 +60,8 @@ async function createFile(argsParams) {
 
 async function readCsvFile(results, s3, csvFilePath) {
   await results.map(async (e) => {
+    process.traceDeprecation = true;
+
     const targetable_id = e["Contract ID"];
     const fileLocation = e["File Location"];
 
@@ -66,11 +71,11 @@ async function readCsvFile(results, s3, csvFilePath) {
     //get file from s3
     let datetime = new Date().getTime();
 
-    let __dirname = path.resolve();
+    // let __dirname = path.resolve();
 
     //ex : 1020310_1021012100.pdf (expand is : targetableId_datetime.pdf)
     const filePath = path.join(
-      __dirname,
+      absolutePath,
       `../../${targetable_id}_${datetime}${extension}`
     );
 
@@ -124,13 +129,7 @@ router.get("/file/upload", async (req, res) => {
     Key: "TEST file import.csv",
   };
 
-  let __dirname = path.resolve();
-
-  console.log("csv dirname :", __dirname);
-
-  const csvFilePath = path.join(__dirname, `../../TEST file import.csv`);
-
-  console.log("csv file path :", csvFilePath);
+  const csvFilePath = path.join(absolutePath, `./TEST file import.csv`);
 
   try {
     const s3Stream = await s3.getObject(bucketParams).createReadStream();
