@@ -179,13 +179,13 @@ router.get("/file/upload", async (req, res) => {
 
 app.use(`/.netlify/functions/api`, router);
 
-app.listen(3000, (error) => {
-  if (!error)
-    console.log(
-      "Server is Successfully Running,and App is listening on port " + 3000
-    );
-  else console.log("Error occurred, server can't start", error);
-});
+// app.listen(3000, (error) => {
+//   if (!error)
+//     console.log(
+//       "Server is Successfully Running,and App is listening on port " + 3000
+//     );
+//   else console.log("Error occurred, server can't start", error);
+// });
 
 module.exports = app;
 module.exports.handler = serverless(app);
