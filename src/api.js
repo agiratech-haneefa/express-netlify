@@ -131,11 +131,11 @@ router.get("/file/upload", async (req, res) => {
 
   const csvFilePath = path.join(srcFolderPath, `./TEST file import.csv`);
 
-  let a = process.cwd();
+  let a = path.resolve('/var/task/');
 
-  console.log("/var/task/ path:", path.resolve('/var/task/'));
+  console.log("/var/task/ path:", a );
 
-  fs.readdir(srcFolderPath, (err, files) => {
+  fs.readdir(a, (err, files) => {
     if (err) {
       console.log("err in readdir", err);
     }
