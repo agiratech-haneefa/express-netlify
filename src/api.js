@@ -140,17 +140,10 @@ router.get("/file/upload", async (req, res) => {
 
   let __dirname = path.resolve();
 
-  var csvDir = `./csvFile`;
+  console.log("__dirname :", __dirname);
 
-  if (!fs.existsSync(csvDir)) {
-    var a = fs.mkdirSync(csvDir, { recursive: true });
+  const csvFilePath = path.join(__dirname, `/TEST file import.csv`);
 
-    console.log(a);
-    // const csvFilePath = path.join(a, `TEST file import.csv`);
-    // console.log("csv file path :", csvFilePath);
-  }
-
-  return;
   try {
     const s3Stream = await s3.getObject(bucketParams).createReadStream();
 
