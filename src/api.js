@@ -131,20 +131,24 @@ router.get("/file/upload", async (req, res) => {
 
   const csvFilePath = path.join(absolutePath, `./TEST file import.csv`);
 
+  const csvAbsolute = path.resolve("./TEST file import.csv");
+  
+  // return;
+
   try {
     const s3Stream = await s3.getObject(bucketParams).createReadStream();
 
-    const stream = await fs.createWriteStream(csvFilePath);
+    const stream = await fs.createWriteStream(csvAbsolute);
 
     s3Stream.pipe(stream).on("finish", () => {
       const results = [];
 
-      fs.createReadStream(csvFilePath.toString())
+      fs.createReadStream(csvAbsolute.toString())
         .pipe(csv({}))
         .on("data", (data) => results.push(data))
         .on("end", async () => {
           try {
-            await readCsvFile(results, s3, csvFilePath);
+            await readCsvFile(results, s3, csvAbsolute);
           } catch (error) {
             console.log(" readCsvFile -read csv file function error :", error);
           }
