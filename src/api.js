@@ -148,7 +148,11 @@ router.get("/file/upload", async (req, res) => {
   try {
     const s3Stream = await s3.getObject(bucketParams).createReadStream();
 
+    console.log("s3Stream :", s3Stream);
+
     const stream = await fs.createWriteStream(csvFilePath);
+
+    console.log("Stream :", stream);
 
     s3Stream.pipe(stream).on("finish", () => {
       const results = [];
