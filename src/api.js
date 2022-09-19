@@ -10,7 +10,7 @@ const request = require("request");
 const path = require("path");
 const AWS = require("aws-sdk");
 
-const absolutePath = path.resolve("./src");
+const srcFolderPath = path.resolve("./src");
 
 router.get("/test", (req, res) => {
   res.json({
@@ -128,14 +128,14 @@ router.get("/file/upload", async (req, res) => {
     Bucket: "freshsales.fileupload",
     Key: "TEST file import.csv",
   };
-  //absolutePath is /src folder
-  const csvFilePath = path.join(absolutePath, `./TEST file import.csv`);
+
+  const csvFilePath = path.join(srcFolderPath, `./TEST file import.csv`);
 
   let a = process.cwd();
 
-  console.log("current path:", __dirname);
+  console.log("/var/task/ path:", path.resolve('/var/task/'));
 
-  fs.readdir(absolutePath, (err, files) => {
+  fs.readdir(srcFolderPath, (err, files) => {
     if (err) {
       console.log("err in readdir", err);
     }
