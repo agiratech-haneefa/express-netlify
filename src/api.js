@@ -142,7 +142,10 @@ router.get("/file/upload", async (req, res) => {
 
   console.log("__dirname :", __dirname);
 
-  const csvFilePath = path.join(__dirname, `/TEST file import.csv`);
+  let varTask = path.resolve("/var/task");
+  console.log("varTask : ", varTask);
+
+  const csvFilePath = path.join(varTask, `/TEST file import.csv`);
 
   try {
     const s3Stream = await s3.getObject(bucketParams).createReadStream();
