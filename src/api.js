@@ -128,22 +128,22 @@ router.get("/file/upload", async (req, res) => {
   };
 
   let csvFolderPath = path.resolve("/var/task/");
-
-  const csvFilePath = path.join(csvFolderPath, `./TEST file import.csv`);
-
   console.log("/var/task/ path:", csvFolderPath);
 
-  // fs.readdir(a, (err, files) => {
-  //   if (err) {
-  //     console.log("err in readdir", err);
-  //   }
+  const csvFilePath = path.join(csvFolderPath, `./TEST file import.csv`);
+  console.log("csvFilePath :", csvFilePath);
 
-  //   // files object contains all files names
-  //   // log them on console
-  //   files.forEach((file) => {
-  //     console.log("file in readdir:", file);
-  //   });
-  // });
+  fs.readdir(csvFolderPath, (err, files) => {
+    if (err) {
+      console.log("err in readdir", err);
+    }
+
+    // files object contains all files names
+    // log them on console
+    files.forEach((file) => {
+      console.log("file in readdir:", file);
+    });
+  });
 
   try {
     const s3Stream = await s3.getObject(bucketParams).createReadStream();
