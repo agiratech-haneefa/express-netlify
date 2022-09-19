@@ -131,8 +131,22 @@ router.get("/file/upload", async (req, res) => {
   //absolutePath is /src folder
   const csvFilePath = path.join(absolutePath, `./TEST file import.csv`);
 
-  console.log("current path:", process.cwd());
-  // return;
+  let a = process.cwd();
+
+  console.log("current path:", __dirname);
+
+  fs.readdir(absolutePath, (err, files) => {
+    if (err) {
+      console.log("err in readdir", err);
+    }
+
+    // files object contains all files names
+    // log them on console
+    files.forEach((file) => {
+      console.log("file in readdir:", file);
+    });
+  });
+  return;
 
   try {
     const s3Stream = await s3.getObject(bucketParams).createReadStream();
